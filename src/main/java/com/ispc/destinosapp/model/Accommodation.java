@@ -20,4 +20,7 @@ public class Accommodation {
     private String location;
     @Column(name = "average_price")
     private BigDecimal avgPrice;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id")
+    private City city;
 }

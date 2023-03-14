@@ -1,11 +1,11 @@
 package com.ispc.destinosapp.wrapper;
 
-import com.ispc.destinosapp.dto.DestinationDto;
+import com.ispc.destinosapp.dto.DestinationDTO;
 import com.ispc.destinosapp.model.Destination;
 
 public class DestinationWrapper {
 
-    public static Destination toEntity(DestinationDto dto){
+    public static Destination toEntity(DestinationDTO dto) {
         Destination entity = new Destination();
         if (dto == null) return entity;
         entity.setName(dto.getName());
@@ -14,12 +14,14 @@ public class DestinationWrapper {
         return entity;
     }
 
-    public static DestinationDto toDto(Destination entity){
-        DestinationDto dto = new DestinationDto();
+    public static DestinationDTO toDto(Destination entity) {
+        DestinationDTO dto = new DestinationDTO();
         if (entity == null) return dto;
         dto.setName(entity.getName());
         dto.setDescription(entity.getDescription());
         dto.setImage(entity.getImage());
         return dto;
     }
+
+
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DestinationDto {
+public class DestinationDTO {
     private String name;
     private String description;
     private String image;

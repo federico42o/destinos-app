@@ -24,16 +24,19 @@ public class City {
     private BigDecimal latitude;
     private BigDecimal longitude;
     private String country;
+    private String province;
+    @Enumerated(EnumType.STRING)
+    private Climate climate;
+    private String language;
+    private String currency;
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attraction> attractions = new ArrayList<>();
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Accommodation> accommodations = new ArrayList<>();
+
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("location")
-    private List<Destination> destinations;
+    private List<Destination> destinations = new ArrayList<>();
 
-    public City(String name, BigDecimal latitude, BigDecimal longitude, String country) {
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.country = country != null ? country : "Argentina";
-        this.destinations = new ArrayList<>();
-    }
 
 }

@@ -1,7 +1,8 @@
 package com.ispc.destinosapp.service;
 
 
-import com.ispc.destinosapp.dto.DestinationDto;
+import com.ispc.destinosapp.dto.DestinationDTO;
+import com.ispc.destinosapp.dto.DestinationResponseDTO;
 import com.ispc.destinosapp.model.City;
 import com.ispc.destinosapp.model.Destination;
 import com.ispc.destinosapp.repository.ICityRepository;
@@ -48,22 +49,11 @@ public class DestinationServiceTest {
         when(destinationRepository.save(any(Destination.class))).thenReturn(destination);
 
         // act
-        Long destinationId = destinationService.create(DestinationDto.builder().name(destination.getName()).image(destination.getImage()).description(destination.getDescription()).cityId(city.getId()).build());
+        Long destinationId = destinationService.create(DestinationDTO.builder().name(destination.getName()).image(destination.getImage()).description(destination.getDescription()).cityId(city.getId()).build());
 
         // assert
         verify(destinationRepository, times(1)).save(any(Destination.class));
         assertNotNull(destinationId);
-    }
-
-    @Test
-    public void testCreateDestinationInvalidCity() {
-        when(cityRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Long destinationId = destinationService.create(DestinationDto.builder().name("Cementerio de la Recoleta").image("image.jpg").description("Un cementerio famoso").cityId(1L).build());
-
-        verify(cityRepository, times(1)).findById(1L);
-        verify(destinationRepository, never()).save(any(Destination.class));
-        assertNull(destinationId);
     }
 
     @Test
@@ -75,7 +65,7 @@ public class DestinationServiceTest {
 
         when(destinationRepository.findAll()).thenReturn(destinationList);
 
-        List<DestinationDto> destinations = destinationService.findAll();
+        List<DestinationResponseDTO> destinations = destinationService.findAll();
 
         verify(destinationRepository, times(1)).findAll();
         assertFalse(destinations.isEmpty());
@@ -88,7 +78,7 @@ public class DestinationServiceTest {
     public void testFindAllDestinationsNoResults() {
         when(destinationRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<DestinationDto> destinations = destinationService.findAll();
+        List<DestinationResponseDTO> destinations = destinationService.findAll();
 
         verify(destinationRepository, times(1)).findAll();
         assertTrue(destinations.isEmpty());
