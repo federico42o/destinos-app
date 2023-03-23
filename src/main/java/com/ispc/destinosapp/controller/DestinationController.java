@@ -1,12 +1,14 @@
 package com.ispc.destinosapp.controller;
 
 
-import com.ispc.destinosapp.dto.DestinationDTO;
+import com.ispc.destinosapp.dto.DestinationRequestDTO;
 import com.ispc.destinosapp.dto.DestinationResponseDTO;
+import com.ispc.destinosapp.model.Destination;
 import com.ispc.destinosapp.service.DestinationServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,17 +35,23 @@ public class DestinationController {
     @Operation(summary = "Get destination By Id")
 
     @GetMapping("/{id}")
-    public ResponseEntity<DestinationDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<DestinationResponseDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
+    }
+
+    @Operation(summary = "get destination by city")
+    @GetMapping("/search")
+    public ResponseEntity<?> getByCity(@RequestParam String city) {
+        return ResponseEntity.ok(service.getByCity(city));
     }
 
     @Operation(summary = "Create destination")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Destination created")})
 
-    @PostMapping("/add")
-    public ResponseEntity<?> create(@RequestBody DestinationDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body("Destination created with id: " + service.create(dto));
+    @PostMapping
+    public ResponseEntity<Long> create(@RequestBody @Valid DestinationRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
     @Operation(summary = "Delete destination by id")
@@ -53,9 +61,10 @@ public class DestinationController {
         return ResponseEntity.ok("Destination with id " + id + " deleted successfully");
     }
 
-    @Operation(summary = "get destination by city")
-    @GetMapping("/search")
-    public ResponseEntity<?> getByCity(@RequestParam String city) {
-        return ResponseEntity.ok(service.getByCity(city));
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Destination> update(@RequestBody @Valid DestinationRequestDTO dto, @PathVariable Long id) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
+
 }

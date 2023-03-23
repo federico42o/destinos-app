@@ -11,4 +11,6 @@ public interface IDestinationDao extends JpaRepository<Destination, Long> {
 
     List<Destination> findAllByLocation_NameIs(String name);
 
+    Destination findByName(String name);
+
 }

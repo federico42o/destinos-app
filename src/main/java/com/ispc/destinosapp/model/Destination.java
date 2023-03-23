@@ -1,5 +1,6 @@
 package com.ispc.destinosapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class Destination {
     private String image;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
+    @JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
     private City location;
 //  getters and setters;
 

@@ -1,16 +1,15 @@
 package com.ispc.destinosapp.service;
 
 import com.ispc.destinosapp.dto.CityDTO;
-import com.ispc.destinosapp.dto.DestinationDTO;
+import com.ispc.destinosapp.dto.DestinationRequestDTO;
 import com.ispc.destinosapp.dto.DestinationResponseDTO;
+import com.ispc.destinosapp.exception.NotFoundException;
 import com.ispc.destinosapp.model.City;
 import com.ispc.destinosapp.model.Destination;
 import com.ispc.destinosapp.repository.ICityRepository;
 import com.ispc.destinosapp.repository.IDestinationDao;
 import com.ispc.destinosapp.wrapper.CityWrapper;
-import com.ispc.destinosapp.wrapper.DestinationWrapper;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +35,8 @@ public class DestinationServiceImpl implements IDestinationService {
         for (Destination destination : list) {
             if (destination.getLocation() != null) {
                 id = destination.getLocation().getId();
-                city = cityRepository.findById(id).orElse(null);
+                city = cityRepository.findById(id).orElseThrow(() -> new NotFoundException("City not found"));
             }
-            CityDTO cityDTO = CityWrapper.toDto(city);
             destinationResponseDTOList.add(DestinationResponseDTO.builder()
                     .city(CityWrapper.summaryDto(city))
                     .description(destination.getDescription())
@@ -53,29 +51,42 @@ public class DestinationServiceImpl implements IDestinationService {
 
     @Override
     public void delete(Long id) {
-        Destination dest = repository.findById(id)
-                .orElseThrow(
-                        () -> new NotFoundException("destination with id:" + id + " doesn't exist")
-                );
-        repository.deleteById(id);
-    }
+        if (repository.findById(id).isPresent()) {
 
-    @Override
-    public DestinationDTO update(DestinationDTO dto) {
-        return null;
-    }
-
-    @Override
-    public DestinationDTO getById(Long id) {
-        Destination dest = repository.findById(id)
-                .orElseThrow(
-                        () -> new NotFoundException("destination with id:" + id + " doesn't exist")
-                );
-        DestinationDTO dto = DestinationWrapper.toDto(dest);
-        if (dest.getLocation() != null) {
-            dto.setCityId(dest.getLocation().getId());
+            repository.deleteById(id);
+        } else {
+            throw new NotFoundException("destination with id:" + id + " doesn't exist");
         }
-        return dto;
+    }
+
+
+    @Override
+    public Destination update(Long id, DestinationRequestDTO dto) {
+        Destination dest = repository.findById(id).orElseThrow(() -> new NotFoundException("destination with id:" + id + " doesn't exist"));
+        dest.setImage(dto.getImage());
+        dest.setDescription(dto.getDescription());
+
+        return repository.save(dest);
+
+    }
+
+    @Override
+    public DestinationResponseDTO getById(Long id) {
+        Destination dest = repository.findById(id)
+                .orElseThrow(
+                        () -> new NotFoundException("destination with id:" + id + " doesn't exist")
+                );
+
+        City city = null;
+        if (dest.getLocation() != null) {
+            city = cityRepository.findById(dest.getLocation().getId()).orElseThrow(() -> new NotFoundException("City not found"));
+        }
+        return DestinationResponseDTO.builder()
+                .city(CityWrapper.summaryDto(city))
+                .description(dest.getDescription())
+                .image(dest.getImage())
+                .name(dest.getName())
+                .build();
 
     }
 
@@ -97,8 +108,9 @@ public class DestinationServiceImpl implements IDestinationService {
     }
 
 
-    public Long create(DestinationDTO dto) {
+    public Long create(DestinationRequestDTO dto) {
         City city = cityRepository.findById(dto.getCityId()).orElseThrow(() -> new NotFoundException("City not found"));
+
         if (city != null) {
             Destination destination = Destination.builder()
                     .description(dto.getDescription())

@@ -1,7 +1,7 @@
 package com.ispc.destinosapp.service;
 
 
-import com.ispc.destinosapp.dto.DestinationDTO;
+import com.ispc.destinosapp.dto.DestinationRequestDTO;
 import com.ispc.destinosapp.dto.DestinationResponseDTO;
 import com.ispc.destinosapp.model.City;
 import com.ispc.destinosapp.model.Destination;
@@ -49,7 +49,7 @@ public class DestinationServiceTest {
         when(destinationRepository.save(any(Destination.class))).thenReturn(destination);
 
         // act
-        Long destinationId = destinationService.create(DestinationDTO.builder().name(destination.getName()).image(destination.getImage()).description(destination.getDescription()).cityId(city.getId()).build());
+        Long destinationId = destinationService.create(DestinationRequestDTO.builder().name(destination.getName()).image(destination.getImage()).description(destination.getDescription()).cityId(city.getId()).build());
 
         // assert
         verify(destinationRepository, times(1)).save(any(Destination.class));

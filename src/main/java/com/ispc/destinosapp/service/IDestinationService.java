@@ -1,7 +1,8 @@
 package com.ispc.destinosapp.service;
 
-import com.ispc.destinosapp.dto.DestinationDTO;
+import com.ispc.destinosapp.dto.DestinationRequestDTO;
 import com.ispc.destinosapp.dto.DestinationResponseDTO;
+import com.ispc.destinosapp.model.Destination;
 
 import java.util.List;
 
@@ -10,9 +11,10 @@ public interface IDestinationService {
 
     void delete(Long id);
 
-    DestinationDTO update(DestinationDTO dto);
+    Destination update(Long id, DestinationRequestDTO dto);
 
-    DestinationDTO getById(Long id);
+
+    DestinationResponseDTO getById(Long id);
 
     List<DestinationResponseDTO> getByCity(String city);
 
