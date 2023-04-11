@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class CitySummaryDTO {
+    private Long id;
     private String name;
     private String province;
     private String country;

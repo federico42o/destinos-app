@@ -1,6 +1,5 @@
 package com.ispc.destinosapp.dto;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -20,7 +19,6 @@ public class DestinationRequestDTO {
     @NotBlank(message = "Please add a description")
     private String description;
     private String image;
-    @NotNull(message = "City ID must be provided")
-    @Min(value = 1, message = "City ID = 0 doesn't exist")
-    private Long cityId;
+    @NotNull(message = "The city must be provided")
+    private CitySummaryDTO city;
 }

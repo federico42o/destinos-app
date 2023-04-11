@@ -1,6 +1,5 @@
 package com.ispc.destinosapp.service;
 
-import com.ispc.destinosapp.dto.CityDTO;
 import com.ispc.destinosapp.dto.DestinationRequestDTO;
 import com.ispc.destinosapp.dto.DestinationResponseDTO;
 import com.ispc.destinosapp.exception.NotFoundException;
@@ -109,9 +108,11 @@ public class DestinationServiceImpl implements IDestinationService {
 
 
     public Long create(DestinationRequestDTO dto) {
-        City city = cityRepository.findById(dto.getCityId()).orElseThrow(() -> new NotFoundException("City not found"));
+        City city = cityRepository.findById(dto.getCity().getId()).orElse(null);
+        if (city == null) {
+            throw new NotFoundException("City not found");
 
-        if (city != null) {
+        } else {
             Destination destination = Destination.builder()
                     .description(dto.getDescription())
                     .name(dto.getName())
@@ -120,10 +121,7 @@ public class DestinationServiceImpl implements IDestinationService {
                     .build();
             Destination savedDestination = repository.save(destination);
             return savedDestination.getId();
-        } else {
-            return null;
         }
-
     }
 
 
